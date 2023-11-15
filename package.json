@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "yl-compontents",
+  "version": "1.0.0",
+  "description": "一个使用 Vuex 管理显示与关闭的UniApp全局模态框，可以通过slot自定义模态框“确认”和“取消”按钮，可以在任何地方管理指定模态框，可以定义多个类型的模态框，并分别管理。",
+  "scripts": {
+    "rollup-c": "rollup --config rollup.config.ts --configPlugin typescript --bundleConfigAsCjs",
+    "build:vue": "npm run rollup-c && npm run rollup-c --environment MINIFY",
+    "build:vue:watch": "npm run rollup-c --watch",
+    "build:style": "sass --no-charset ./src/assets/styles/index.scss | node ./build/print-banner.js > dist/yl-compontents.css && cleancss -o dist/yl-compontents.min.css dist/yl-compontents.css",
+    "build:lib": "rimraf dist && npm run build:vue && npm run build:style",
+    "publish:lib": "npm run build:lib && npm publish"
+  },
+  "keywords": [
+    "UniApp",
+    "全局模态框",
+    "模态框",
+    "modal",
+    "全局",
+    "自定义确认按钮"
+  ],
+  "main": "lib/src/index.js",
+  "module": "lib/esm/index.mjs",
+  "author": "yoline <wu.yoline@gmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "vue": ">= 2.6.14 < 2.7",
+    "vuex": "^3.2.0"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.3.2",
+    "@dcloudio/uni-app": "^2.0.2-3090620231104001",
+    "clean-css-cli": "^5.6.2",
+    "rimraf": "^5.0.5",
+    "sass": "^1.69.5",
+    "typescript": "^5.2.2"
+  }
+}
