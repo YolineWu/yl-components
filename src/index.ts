@@ -7,4 +7,3 @@ declare global {
 Object.typedKeys = Object.keys as any;
 
 export * from "./components";
-export default {};

@@ -234,15 +234,18 @@ export function useModal(
   options: ModalOptions = {},
 ): ModalController {
   // 合并选项 `options`
-  const modalData: ModalData = { ...DEFAULT_MODAL_OPTIONS };
+  const defModalData: ModalData = DEFAULT_MODAL_OPTIONS;
   Object.typedKeys(options).forEach((key) => {
     // @ts-expect-error
-    if (options[key] !== undefined) modalData[key] = options[key];
+    if (options[key] !== undefined) defModalData[key] = options[key];
   });
 
   // 检查如果没有对应 `storePath` 的 store 模组，则手动注册
   if (!store.hasModule(storePath))
-    store.registerModule<ModalState>(storePath, defineStoreModule(modalData));
+    store.registerModule<ModalState>(
+      storePath,
+      defineStoreModule(defModalData),
+    );
 
   // 当前 store 模组的 `state`
   const modalState: ModalState = store.state[storePath];
@@ -254,9 +257,9 @@ export function useModal(
         modalState.pageState === ModalPageState.HIDED ||
         modalState.pageState === ModalPageState.UNLOAD
       )
-        return;
+        return modalState.data;
       const resultData: ModalData = {
-        ...(reset ? modalData : modalState.data),
+        ...(reset ? defModalData : modalState.data),
         ...data,
       };
       store.commit(`${storePath}/${Mutaion.SET_DATA}`, resultData);

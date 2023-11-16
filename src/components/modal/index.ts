@@ -7,8 +7,6 @@ import {
   useModal,
 } from "./useModal";
 
-export default {};
-
 export {
   DEFAULT_MODAL_STORE_PATH,
   DEFAULT_MODAL_OPTIONS,

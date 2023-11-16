@@ -1,8 +1,9 @@
 import { defineConfig } from "rollup";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import vue from "rollup-plugin-vue";
+import postcss from "rollup-plugin-postcss";
 
 export default defineConfig({
   external: ["vue", "@dcloudio/uni-app"],
@@ -11,11 +12,13 @@ export default defineConfig({
     {
       format: "es",
       dir: "lib/es",
+      exports: "named",
     },
     {
       format: "umd",
       dir: "lib/umd",
       name: "YlCompontents",
+      exports: "named",
       globals: {
         vue: "Vue",
       },
@@ -23,8 +26,21 @@ export default defineConfig({
   ],
   plugins: [
     nodeResolve({ extensions: [".vue", ".ts"] }),
-    typescript({ compilerOptions: { declaration: true } }),
+    typescript({
+      exclude: ["rollup.config.ts"],
+    }),
+    vue({
+      preprocessStyles: true,
+      preprocessOptions: {
+        scss: {
+          additionalData: `@import 'src/assets/styles/index';`,
+        },
+      },
+      templatePreprocessOptions: {
+        isProduction: true,
+      },
+    }),
     commonjs(),
-    vue(),
+    postcss(),
   ],
 });

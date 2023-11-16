@@ -48,7 +48,6 @@ export default Vue.extend({
   },
   computed: {
     state(): ModalState | undefined {
-    uni.navigateTo()
       return this.$store.state[this.storePath];
     },
     stateData(): ModalData {
@@ -95,8 +94,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@use "@/assets/styles/index" as *;
-
 .c-yl-modal {
   position: absolute;
   top: 0;
