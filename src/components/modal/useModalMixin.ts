@@ -3,27 +3,12 @@ import {
   ModalState,
   DEFAULT_MODAL_STORE_PATH,
   ModalPageState,
+  DEFAULT_MODAL_OPTIONS,
 } from "./useModal";
 import Vue from "vue";
-import { createNamespacedHelpers, Store } from "vuex";
+import { Store } from "vuex";
 import { BackActionType } from "./useModal";
-
-type IsShowFieldName = `is${string}Show`;
-type BackActionFieldName = `${string}backAction`;
-
-type FiledName = IsShowFieldName | BackActionFieldName;
-
-type MapOptionsFlag<Key extends string> = {
-  [key in Key]: (
-    state: ModalState,
-  ) => key extends IsShowFieldName
-    ? boolean
-    : key extends BackActionFieldName
-    ? BackActionType
-    : never;
-};
-
-type MapOptions = MapOptionsFlag<FiledName>;
+import { StringUtils } from "../../utils/string";
 
 /**
  * `yl-modal` 组件页面行为 `mixin`，包含 `yl-modal` 组件
@@ -36,51 +21,52 @@ export function useModalMixin(
   store: Store<any>,
   storePath: string = DEFAULT_MODAL_STORE_PATH,
 ) {
+  if (!storePath) throw Error("storePath 不能为空");
   // 定义 `yl-modal` 是否正在显示的计算属性
-  const { mapState } = createNamespacedHelpers(storePath);
-  const isShowFieldName: IsShowFieldName = `is${storePath}Show`;
-  const backActionFieldName: BackActionFieldName = `${storePath}backAction`;
-  const mapOptions = {
-    [isShowFieldName]: (state: ModalState) => state.show,
-    [backActionFieldName]: (state: ModalState) => state.data.backAction,
-  } as MapOptions;
-  const mapStateResult = store.hasModule(storePath)
-    ? mapState<ModalState, MapOptions>(mapOptions)
-    : ({
-        [isShowFieldName]: () => false,
-        [backActionFieldName]: () => BackActionType.DISABLED,
-      } as MapOptions);
+  const capitalStorePath = StringUtils.capitalizeFirst(storePath);
+  const isShowFieldName = `isYL${capitalStorePath}Show`;
+  const backActionFieldName = `yl${capitalStorePath}backAction`;
 
   return Vue.extend({
-    computed: mapStateResult,
+    computed: {
+      ylModalState(): ModalState | undefined {
+        return store.state[storePath];
+      },
+      [isShowFieldName](): boolean {
+        return !!this.ylModalState?.show;
+      },
+      [backActionFieldName](): BackActionType {
+        return (
+          this.ylModalState?.data.backAction || DEFAULT_MODAL_OPTIONS.backAction
+        );
+      },
+    },
     onLoad() {
-      this.onPageStateChange(ModalPageState.LOAD);
+      this.onYlPageStateChange(ModalPageState.LOAD);
     },
     onShow() {
-      this.onPageStateChange(ModalPageState.SHOWED);
+      this.onYlPageStateChange(ModalPageState.SHOWED);
     },
     onHide() {
-      this.onPageStateChange(ModalPageState.HIDED);
+      this.onYlPageStateChange(ModalPageState.HIDED);
     },
     onUnload() {
-      this.onPageStateChange(ModalPageState.UNLOAD);
+      this.onYlPageStateChange(ModalPageState.UNLOAD);
     },
     onBackPress({ from }): boolean | void {
-      if (from === "navigateBack") return;
+      if (from === "navigateBack" || !this.ylModalState) return;
       switch (this[backActionFieldName as keyof typeof this]) {
         case BackActionType.DISABLED:
           return true;
         case BackActionType.DEFAULT:
-          this.$store.dispatch(storePath + "/" + ModalEvent.CLOSE);
+          store.dispatch(storePath + "/" + ModalEvent.CLOSE);
           return true;
       }
     },
     methods: {
-      onPageStateChange(state: ModalPageState) {
-        this.$store.dispatch(
-          storePath + "/" + ModalEvent.PAGE_STATE_CHANGE,
-          state,
-        );
+      onYlPageStateChange(state: ModalPageState) {
+        if (this.ylModalState)
+          store.dispatch(storePath + "/" + ModalEvent.PAGE_STATE_CHANGE, state);
       },
     },
   });
