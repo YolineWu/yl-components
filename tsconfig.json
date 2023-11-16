@@ -29,6 +29,7 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "*.d.ts"
+    "*.d.ts",
+    "rollup.config.ts"
   ]
 }

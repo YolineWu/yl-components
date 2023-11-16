@@ -48,6 +48,7 @@ export default Vue.extend({
   },
   computed: {
     state(): ModalState | undefined {
+    uni.navigateTo()
       return this.$store.state[this.storePath];
     },
     stateData(): ModalData {
