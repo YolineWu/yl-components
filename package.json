@@ -14,8 +14,14 @@
     "全局",
     "自定义确认按钮"
   ],
-  "main": "lib/src/index.js",
-  "module": "lib/esm/index.mjs",
+  "main": "lib/umd/index.js",
+  "module": "lib/es/index.mjs",
+  "types": "lib/es/src/index.d.ts",
+  "exports": {
+    "types": "./lib/es/src/index.d.ts",
+    "import": "./lib/es/index.mjs",
+    "default": "./lib/umd/index.js"
+  },
   "author": "yoline <wu.yoline@gmail.com>",
   "license": "MIT",
   "dependencies": {

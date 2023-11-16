@@ -13,6 +13,7 @@ export default defineConfig({
       format: "es",
       dir: "lib/es",
       exports: "named",
+      entryFileNames: "[name].mjs",
     },
     {
       format: "umd",
