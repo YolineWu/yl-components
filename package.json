@@ -30,9 +30,15 @@
   "devDependencies": {
     "@dcloudio/types": "^3.3.2",
     "@dcloudio/uni-app": "^2.0.2-3090620231104001",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.5",
     "clean-css-cli": "^5.6.2",
     "rimraf": "^5.0.5",
+    "rollup": "^4.4.1",
+    "rollup-plugin-vue": "^6.0.0",
     "sass": "^1.69.5",
+    "tslib": "^2.6.2",
     "typescript": "^5.2.2"
   }
 }
