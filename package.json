@@ -20,12 +20,17 @@
   ],
   "main": "lib/umd/index.js",
   "module": "lib/es/index.mjs",
+  "typings": "lib/es/src/index.d.ts",
   "types": "lib/es/src/index.d.ts",
   "exports": {
     ".": {
       "import": "./lib/es/index.mjs",
-      "require": "./lib/umd/index.js"
+      "node": "./lib/es/index.mjs",
+      "default": "./lib/umd/index.js",
+      "require": "./lib/umd/index.js",
+      "types": "./lib/es/src/index.d.ts"
     },
+    "./package.json": "./package.json",
     "./styles/css": "./src/assets/styles/export/index.css"
   },
   "author": "yoline <wu.yoline@gmail.com>",

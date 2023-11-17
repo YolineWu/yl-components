@@ -48,6 +48,7 @@ import {
 } from "./useModal";
 
 export default Vue.extend({
+  name: "yl-modal",
   props: {
     storePath: { type: String, default: DEFAULT_MODAL_STORE_PATH },
     center: { type: Boolean, default: true },
