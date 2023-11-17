@@ -26,7 +26,10 @@ export default defineConfig({
     },
   ],
   plugins: [
-    vue({ css: false, data: { scss: "@use 'src/assets/styles/index' as *;" } }),
+    vue({
+      css: false,
+      data: { scss: "@import 'src/assets/styles/base/index';" },
+    }),
     nodeResolve({ extensions: [".vue", ".ts"] }),
     typescript({
       exclude: ["rollup.config.ts"],

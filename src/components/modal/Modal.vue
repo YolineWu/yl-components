@@ -1,33 +1,40 @@
 <template>
-  <view
+  <div
     v-if="show"
     :class="['c-yl-modal', { 'c-yl-modal--center': center }]"
     @click="clickMask"
   >
-    <view class="c-yl-modal__wrap">
-      <view class="c-yl-modal__title" v-if="title">{{ title }}</view>
-      <view class="c-yl-modal__main">{{ content }}</view>
-      <view class="c-yl-modal__desc" v-if="desc">{{ desc }}</view>
-      <view class="c-yl-modal__action-bar">
-        <slot name="cancel" :cancel="clickCancel">
-          <button
-            class="c-yl-modal__button c-yl-modal__button--cancel"
-            @click="clickCancel"
-          >
+    <slot v-bind="stateData"></slot>
+    <div v-if="!$slots['default']" class="c-yl-modal__wrap">
+      <slot name="title" v-bind="{ title }"></slot>
+      <div class="c-yl-modal__title" v-if="!$slots['title'] && title">
+        {{ title }}
+      </div>
+      <slot name="content"></slot>
+      <div class="c-yl-modal__main" v-if="!$slots['content']">
+        {{ content }}
+      </div>
+      <slot name="desc"></slot>
+      <div class="c-yl-modal__desc" v-if="!$slots['desc'] && desc">
+        {{ desc }}
+      </div>
+      <slot name="action-bar"></slot>
+      <div class="c-yl-modal__action-bar" v-if="!$slots['action-bar']">
+        <div class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--cancel">
+          <slot name="cancel"></slot>
+          <button v-if="!$slots['cancel']" @click="clickCancel">
             {{ cancelText }}
           </button>
-        </slot>
-        <slot name="confirm" :confirm="clickConfirm">
-          <button
-            class="c-yl-modal__button c-yl-modal__button--confirm"
-            @click="clickConfirm"
-          >
+        </div>
+        <div class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--confirm">
+          <slot name="confirm"></slot>
+          <button v-if="!$slots['confirm']" @click="clickConfirm">
             {{ confirmText }}
           </button>
-        </slot>
-      </view>
-    </view>
-  </view>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -53,8 +60,7 @@ export default Vue.extend({
       return this.state?.data || DEFAULT_MODAL_OPTIONS;
     },
     show(): boolean {
-      return true;
-      //return !!this.state?.show;
+      return !!this.state?.show;
     },
     title(): string {
       return this.stateData.title;
@@ -111,7 +117,7 @@ export default Vue.extend({
   }
 
   &:not(&--center) {
-    & > view {
+    & > div {
       margin-top: var(--yl-modal-margin-top);
     }
   }
@@ -121,6 +127,8 @@ export default Vue.extend({
     background: var(--yl-modal-bg);
     width: var(--yl-modal-width);
     border-radius: var(--yl-modal-border-radius);
+    display: flex;
+    flex-direction: column;
   }
 
   &__title {
@@ -146,27 +154,35 @@ export default Vue.extend({
     padding: var(--yl-modal-action-bar-padding);
     margin-top: var(--yl-modal-space-desc-action-bar);
 
-    button {
+    & > * {
       flex: 1;
     }
   }
 
-  &__button {
-    @include clear-native-button();
-    @include button();
-    text-align: center;
-    padding: var(--yl-modal-btn-padding);
+  &__btn-wrap {
+    button {
+      @include clear-native-button();
+      @include button();
+      text-align: center;
+      padding: var(--yl-modal-btn-padding);
+      width: 100%;
+      height: 100%;
+    }
 
     &--cancel {
-      background: var(--yl-modal-cancel-bg-color);
-      color: var(--yl-modal-cancel-text-color);
-      border: var(--yl-modal-cancel-border);
+      button {
+        background: var(--yl-modal-cancel-bg-color);
+        color: var(--yl-modal-cancel-text-color);
+        border: var(--yl-modal-cancel-border);
+      }
     }
 
     &--confirm {
-      background: var(--yl-modal-confirm-bg-color);
-      color: var(--yl-modal-confirm-text-color);
-      border: var(--yl-modal-confirm-border);
+      button {
+        background: var(--yl-modal-confirm-bg-color);
+        color: var(--yl-modal-confirm-text-color);
+        border: var(--yl-modal-confirm-border);
+      }
     }
   }
 }
