@@ -165,6 +165,8 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
     },
     mutations: {
       [Mutaion.SET_SHOW](state: ModalState, isShow: boolean) {
+        console.log("---------------- setShow state=", state);
+        console.log("---------------- setShow isShow=", isShow);
         state.show = isShow;
         showListeners.forEach((listener) => listener.callback(isShow));
       },
@@ -204,9 +206,15 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
         console.log("----------- store action, pageState=", pageState);
         commit(Mutaion.SET_PAGE_STATE, pageState);
         if (
-          (pageState === ModalPageState.HIDED ||
-            pageState === ModalPageState.UNLOAD) &&
-          state.show
+          state.show &&
+          pageState === ModalPageState.HIDED &&
+          state.data.closeOnHide
+        )
+          commit(Mutaion.SET_SHOW, false);
+        if (
+          state.show &&
+          pageState === ModalPageState.UNLOAD &&
+          state.data.closeOnUnload
         )
           commit(Mutaion.SET_SHOW, false);
       },
@@ -231,6 +239,16 @@ function onChange<CB extends ShowCallback | DataCallBack>(
   };
 }
 
+/** 如果 `yl-modal` 对应的store还没有注册，这注册 */
+export function registerStoreIfNo(
+  store: Store<any>,
+  storePath: string,
+  modalData: ModalData,
+) {
+  if (!store.hasModule(storePath))
+    store.registerModule<ModalState>(storePath, defineStoreModule(modalData));
+}
+
 /** 使用 `yl-modal` 组件 */
 export function useModal(
   store: Store<any>,
@@ -245,11 +263,6 @@ export function useModal(
   });
 
   // 检查如果没有对应 `storePath` 的 store 模组，则手动注册
-  if (!store.hasModule(storePath))
-    store.registerModule<ModalState>(
-      storePath,
-      defineStoreModule(defModalData),
-    );
 
   // 当前 store 模组的 `state`
   function getModalState(): ModalState {
@@ -261,7 +274,7 @@ export function useModal(
     isShow: () => getModalState().show,
     show(data: ModalOptions, reset: boolean = false): ModalData {
       const modalState = getModalState();
-      console.log("---------------- modalState=", modalState);
+      console.log("---------------- show() modalState=", modalState);
       if (
         modalState.pageState === ModalPageState.HIDED ||
         modalState.pageState === ModalPageState.UNLOAD

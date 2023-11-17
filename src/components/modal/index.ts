@@ -5,6 +5,7 @@ import {
   DEFAULT_MODAL_OPTIONS,
   ModalEvent,
   useModal,
+  registerStoreIfNo,
 } from "./useModal";
 
 export {
@@ -14,4 +15,5 @@ export {
   useModal as useYLModal,
   useModalMixin as useYLModalMixin,
   Modal as YlModal,
+  registerStoreIfNo as registerYlStoreIfNo,
 };

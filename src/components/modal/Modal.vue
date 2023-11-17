@@ -41,7 +41,6 @@ import {
 } from "./useModal";
 
 export default Vue.extend({
-  name: "YlModal",
   props: {
     storePath: { type: String, default: DEFAULT_MODAL_STORE_PATH },
     center: { type: Boolean, default: true },
@@ -54,7 +53,8 @@ export default Vue.extend({
       return this.state?.data || DEFAULT_MODAL_OPTIONS;
     },
     show(): boolean {
-      return !!this.state?.show;
+      return true;
+      //return !!this.state?.show;
     },
     title(): string {
       return this.stateData.title;

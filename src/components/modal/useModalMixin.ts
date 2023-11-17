@@ -4,6 +4,7 @@ import {
   DEFAULT_MODAL_STORE_PATH,
   ModalPageState,
   DEFAULT_MODAL_OPTIONS,
+  registerStoreIfNo,
 } from "./useModal";
 import Vue from "vue";
 import { Store } from "vuex";
@@ -42,6 +43,9 @@ export function useModalMixin(
       },
     },
     onLoad() {
+      // 如果没有 `yl-modal` 组件的store则注册
+      registerStoreIfNo(store, storePath, DEFAULT_MODAL_OPTIONS);
+
       this.onYlPageStateChange(ModalPageState.LOAD);
     },
     onShow() {
