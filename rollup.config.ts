@@ -19,7 +19,7 @@ export default defineConfig({
       format: "umd",
       exports: "named",
       dir: "lib/umd",
-      name: "YlCompontents",
+      name: "YlComponents",
       globals: {
         vue: "Vue",
       },
