@@ -88,6 +88,8 @@ export type ModalController = {
   onShowChange(callback: ShowCallback): () => void;
   /** 组件内容数据发生变化时调用传进来的回调，此方法返回取消注册当前回调的方法 */
   onDataChange(callback: DataCallBack): () => void;
+  /** 获取组件状态数据 */
+  getModalState(): ModalState;
 };
 
 export type GMListener<CB extends ShowCallback | DataCallBack> = {
@@ -199,10 +201,12 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
         { commit, state },
         pageState: ModalPageState,
       ) {
+        console.log("----------- store action, pageState=", pageState);
         commit(Mutaion.SET_PAGE_STATE, pageState);
         if (
-          (pageState === ModalPageState.HIDED && state.show) ||
-          (pageState === ModalPageState.UNLOAD && state.show)
+          (pageState === ModalPageState.HIDED ||
+            pageState === ModalPageState.UNLOAD) &&
+          state.show
         )
           commit(Mutaion.SET_SHOW, false);
       },
@@ -248,11 +252,16 @@ export function useModal(
     );
 
   // 当前 store 模组的 `state`
-  const modalState: ModalState = store.state[storePath];
+  function getModalState(): ModalState {
+    return store.state[storePath];
+  }
 
   return {
-    isShow: () => modalState.show,
+    getModalState,
+    isShow: () => getModalState().show,
     show(data: ModalOptions, reset: boolean = false): ModalData {
+      const modalState = getModalState();
+      console.log("---------------- modalState=", modalState);
       if (
         modalState.pageState === ModalPageState.HIDED ||
         modalState.pageState === ModalPageState.UNLOAD

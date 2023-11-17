@@ -94,6 +94,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+@use 'src/assets/styles/index' as *;
+
 .c-yl-modal {
   position: absolute;
   top: 0;

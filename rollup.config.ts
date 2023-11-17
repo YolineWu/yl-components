@@ -2,7 +2,8 @@ import { defineConfig } from "rollup";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
-import vue from "rollup-plugin-vue";
+// @ts-expect-error 没有`d.ts`文件
+import vue from "rollup-plugin-vue2";
 import postcss from "rollup-plugin-postcss";
 
 export default defineConfig({
@@ -11,15 +12,15 @@ export default defineConfig({
   output: [
     {
       format: "es",
-      dir: "lib/es",
       exports: "named",
+      dir: "lib/es",
       entryFileNames: "[name].mjs",
     },
     {
       format: "umd",
+      exports: "named",
       dir: "lib/umd",
       name: "YlCompontents",
-      exports: "named",
       globals: {
         vue: "Vue",
       },
@@ -32,11 +33,6 @@ export default defineConfig({
     }),
     vue({
       preprocessStyles: true,
-      preprocessOptions: {
-        scss: {
-          additionalData: `@import 'src/assets/styles/index';`,
-        },
-      },
       templatePreprocessOptions: {
         isProduction: true,
       },

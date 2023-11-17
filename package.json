@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "一个使用 Vuex 管理显示与关闭的UniApp全局模态框，可以通过slot自定义模态框“确认”和“取消”按钮，可以在任何地方管理指定模态框，可以定义多个类型的模态框，并分别管理。",
   "scripts": {
-    "build": "rimraf lib && rollup --config rollup.config.ts --configPlugin typescript"
+    "build": "rimraf lib && rollup --config rollup.config.ts --configPlugin typescript",
+    "watch": "rimraf lib && rollup --config rollup.config.ts --configPlugin typescript --watch"
   },
   "keywords": [
     "UniApp",
@@ -28,7 +29,7 @@
     "vuex": "^3.2.0"
   },
   "peerDependencies": {
-    "vue": ">= 2.6.14 < 2.7"
+    "vue": "~2.6.14"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.3.2",
@@ -43,9 +44,10 @@
     "rollup": "^4.4.1",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
-    "rollup-plugin-vue": "^6.0.0",
+    "rollup-plugin-vue2": "^0.8.1",
     "sass": "^1.69.5",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vue-template-compiler": "~2.6.14"
   }
 }
