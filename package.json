@@ -26,6 +26,10 @@
     "./styles/css": "./src/assets/styles/export/index.css"
   },
   "author": "yoline <wu.yoline@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YolineWu/yl-components"
+  },
   "license": "MIT",
   "dependencies": {
     "vuex": "^3.2.0"
