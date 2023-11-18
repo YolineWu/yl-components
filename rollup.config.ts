@@ -4,37 +4,67 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import vue from "rollup-plugin-vue";
 import postcss from "rollup-plugin-postcss";
+import { glob } from "glob";
 
-export default defineConfig({
-  external: ["vue", "@dcloudio/uni-app"],
-  input: "src/index.ts",
-  output: [
-    {
+// 加载 `package.json` 文件内容
+import packageInfo from "./package.json" assert { type: "json" };
+import path from "path";
+import { fileURLToPath } from "url";
+import { PreRenderedChunk } from "rollup";
+
+// 在每个文件开始的地方添加的内容
+const banner = `
+/**
+ * ${packageInfo.name} library v${packageInfo.version}
+ * github: https://github.com/YolineWu/yl-components
+ */
+`;
+
+// 主入口文件
+const indexEntries = { index: "src/index.ts" };
+// `.vue` 入口文件
+const vueEntries = Object.fromEntries(
+  glob.sync("src/**/*.vue").map((file) => [
+    // 入口文件名
+    path.relative("src/components", file),
+    fileURLToPath(new URL(file, import.meta.url)),
+  ]),
+);
+
+/**
+ *
+ */
+export default defineConfig([
+  {
+    external: ["vue", "vuex", "@dcloudio/uni-app"],
+    input: { ...indexEntries, ...vueEntries },
+    preserveEntrySignatures: "strict",
+    strictDeprecations: true,
+    output: {
       format: "es",
-      exports: "named",
-      dir: "lib/es",
-      entryFileNames: "[name].mjs",
-    },
-    {
-      format: "umd",
-      exports: "named",
-      dir: "lib/umd",
-      name: "YlComponents",
-      globals: {
-        vue: "Vue",
+      dir: "./",
+      sourcemap: "inline",
+      assetFileNames: "lib/assets/[name]-[hash][extname]",
+      chunkFileNames: "lib/es/[name]-[hash].mjs",
+      entryFileNames: (info: PreRenderedChunk) => {
+        return path.extname(info.name) === ".vue"
+          ? "components/[name].mjs"
+          : "lib/es/[name].mjs";
       },
+      banner,
     },
-  ],
-  plugins: [
-    vue({
-      css: false,
-      data: { scss: "@import 'src/assets/styles/base/index';" },
-    }),
-    nodeResolve({ extensions: [".vue", ".ts"] }),
-    typescript({
-      exclude: ["rollup.config.ts"],
-    }),
-    commonjs(),
-    postcss(),
-  ],
-});
+    plugins: [
+      vue({
+        css: false,
+        data: { scss: "@import 'src/assets/styles/base/index';" },
+      }),
+      nodeResolve({ extensions: [".vue", ".ts", ".tsx"] }),
+      typescript({
+        useTsconfigDeclarationDir: true,
+        exclude: ["rollup.config.ts"],
+      }),
+      commonjs(),
+      postcss(),
+    ],
+  },
+]);

@@ -1,4 +1,4 @@
-import Modal from "./Modal.vue";
+import Modal from "./modal.vue";
 import { useModalMixin } from "./useModalMixin";
 import {
   DEFAULT_MODAL_STORE_PATH,

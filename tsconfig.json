@@ -15,7 +15,7 @@
     "noEmit": true,
     "jsx": "preserve",
     "composite": true,
-    "outDir": "lib",
+    "outDir": "lib/es",
     "declaration": true,
     "declarationDir": "lib/types",
 
@@ -32,6 +32,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "*.d.ts",
-    "rollup.config.ts"
+    "rollup.config.ts",
+    "package.json"
   ]
 }

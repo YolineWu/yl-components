@@ -23,4 +23,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-tsconfig.tsbuildinfo
+/tsconfig.tsbuildinfo
+/components
