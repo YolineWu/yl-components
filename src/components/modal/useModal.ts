@@ -165,8 +165,6 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
     },
     mutations: {
       [Mutaion.SET_SHOW](state: ModalState, isShow: boolean) {
-        console.log("---------------- setShow state=", state);
-        console.log("---------------- setShow isShow=", isShow);
         state.show = isShow;
         showListeners.forEach((listener) => listener.callback(isShow));
       },
@@ -203,7 +201,6 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
         { commit, state },
         pageState: ModalPageState,
       ) {
-        console.log("----------- store action, pageState=", pageState);
         commit(Mutaion.SET_PAGE_STATE, pageState);
         if (
           state.show &&
@@ -274,7 +271,6 @@ export function useModal(
     isShow: () => getModalState().show,
     show(data: ModalOptions, reset: boolean = false): ModalData {
       const modalState = getModalState();
-      console.log("---------------- show() modalState=", modalState);
       if (
         modalState.pageState === ModalPageState.HIDED ||
         modalState.pageState === ModalPageState.UNLOAD
