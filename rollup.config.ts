@@ -32,9 +32,10 @@ const vueEntries = Object.fromEntries(
 );
 
 /**
- *
+ * 定义 `rollup` 配置
  */
 export default defineConfig([
+  // 生成 `es` js文件
   {
     external: ["vue", "vuex", "@dcloudio/uni-app"],
     input: { ...indexEntries, ...vueEntries },
@@ -44,7 +45,7 @@ export default defineConfig([
       format: "es",
       dir: "./",
       sourcemap: "inline",
-      assetFileNames: "lib/assets/[name]-[hash][extname]",
+      assetFileNames: "lib/es/assets/[name]-[hash][extname]",
       chunkFileNames: "lib/es/[name]-[hash].mjs",
       entryFileNames: (info: PreRenderedChunk) => {
         return path.extname(info.name) === ".vue"
@@ -62,6 +63,42 @@ export default defineConfig([
       typescript({
         useTsconfigDeclarationDir: true,
         exclude: ["rollup.config.ts"],
+      }),
+      commonjs(),
+      postcss(),
+    ],
+  },
+  // 生成 `umd` js文件
+  {
+    external: ["vue", "vuex", "@dcloudio/uni-app"],
+    input: indexEntries,
+    preserveEntrySignatures: "strict",
+    strictDeprecations: true,
+    output: {
+      format: "umd",
+      dir: "lib/umd",
+      name: "YlComponents",
+      sourcemap: "inline",
+      banner,
+      globals: {
+        vue: "Vue",
+      },
+    },
+    plugins: [
+      vue({
+        css: false,
+        data: { scss: "@import 'src/assets/styles/base/index';" },
+      }),
+      nodeResolve({ extensions: [".vue", ".ts", ".tsx"] }),
+      typescript({
+        exclude: ["rollup.config.ts"],
+        tsconfigOverride: {
+          compilerOptions: {
+            declaration: false,
+            composite: false,
+            rootDir: "./",
+          },
+        },
       }),
       commonjs(),
       postcss(),
