@@ -40,5 +40,5 @@
     </div>
   </div>
 </template>
-<script lang="ts" src="./modal.ts" />
-<style lang="scss" src="./modal.scss" scoped />
+<script lang="ts" src="./yl-modal.ts" />
+<style lang="scss" src="./yl-modal.scss" scoped />
