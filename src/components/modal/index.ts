@@ -1,4 +1,3 @@
-import Modal from "./modal.vue";
 import { useModalMixin } from "./useModalMixin";
 import {
   DEFAULT_MODAL_STORE_PATH,
@@ -14,6 +13,5 @@ export {
   ModalEvent as YLModalEvent,
   useModal as useYLModal,
   useModalMixin as useYLModalMixin,
-  Modal as YlModal,
   registerStoreIfNo as registerYlStoreIfNo,
 };

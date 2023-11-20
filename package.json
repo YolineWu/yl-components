@@ -30,6 +30,7 @@
       "require": "./lib/umd/index.js",
       "types": "./lib/types/src/index.d.ts"
     },
+    "./components/modal/modal.vue": "./components/modal/modal.vue",
     "./styles/css": "./src/assets/styles/export/index.css"
   },
   "author": "yoline <wu.yoline@gmail.com>",
@@ -48,7 +49,6 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
-    "@types/node": "^20.9.1",
     "clean-css-cli": "^5.6.2",
     "glob": "^10.3.10",
     "postcss": "^8.4.31",
