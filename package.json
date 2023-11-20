@@ -18,19 +18,22 @@
     "全局",
     "自定义确认按钮"
   ],
-  "main": "lib/umd/index.js",
+  "main": "lib/cjs/index.js",
   "module": "lib/es/index.mjs",
-  "typings": "lib/types/src/index.d.ts",
   "types": "lib/types/src/index.d.ts",
   "exports": {
     ".": {
       "import": "./lib/es/index.mjs",
-      "node": "./lib/es/index.mjs",
-      "default": "./lib/umd/index.js",
-      "require": "./lib/umd/index.js",
-      "types": "./lib/types/src/index.d.ts"
+      "require": "./lib/cjs/index.js",
+      "types": "./lib/types/src/index.d.ts",
+      "default": "./lib/cjs/index.js"
     },
-    "./components/modal/modal.vue": "./components/modal/modal.vue",
+    "./components/*.vue": {
+      "import": "./components/*.vue",
+      "require": "./lib/cjs/components/*.cjs",
+      "types": "./lib/types/components/*.d.ts",
+      "default": "./lib/cjs/components/*.cjs"
+    },
     "./styles/css": "./src/assets/styles/export/index.css"
   },
   "files": [

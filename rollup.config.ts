@@ -5,6 +5,8 @@ import typescript from "rollup-plugin-typescript2";
 import * as sass from "sass";
 import { glob } from "glob";
 import fs from "fs";
+import vue from "rollup-plugin-vue";
+import postcss from "rollup-plugin-postcss";
 
 // 加载 `package.json` 文件内容
 import packageInfo from "./package.json" assert { type: "json" };
@@ -32,10 +34,28 @@ const htmlBanner = `<!-- ${packageInfo.name} library v${packageInfo.version} -->
 
 // es库位置
 const ES_LIB_PATH = "lib/es";
+// cjs库位置
+const CJS_LIB_PATH = "lib/cjs";
 // es文件扩展名
 const ES_EXTENSION = ".mjs";
+// cjs文件扩展名
+const CJS_EXTENSION = ".cjs";
 // css文件扩展名
 const CSS_EXTENSION = ".css";
+
+// sass 解析选项
+const sassOptions: sass.Options<"sync"> = {
+  sourceMap: true,
+  importers: [
+    {
+      findFileUrl(url: string): URL {
+        return url.startsWith("@")
+          ? new URL(path.join("src", url.substring(1)), import.meta.url)
+          : new URL(url, import.meta.url);
+      },
+    },
+  ],
+};
 
 // 主入口文件
 const indexEntries = { index: "src/index.ts" };
@@ -69,18 +89,7 @@ async function compileScss() {
   console.info("compiling scss");
   for (const entry of vueEntries) {
     // 使用sass解析成css
-    const result = sass.compile(entry.scssFile, {
-      sourceMap: true,
-      importers: [
-        {
-          findFileUrl(url: string): URL {
-            return url.startsWith("@")
-              ? new URL(path.join("src", url.substring(1)), import.meta.url)
-              : new URL(url, import.meta.url);
-          },
-        },
-      ],
-    });
+    const result = sass.compile(entry.scssFile, sassOptions);
 
     // 生成css文件的位置
     const cssPath = path.join(ES_LIB_PATH, entry.name + CSS_EXTENSION);
@@ -145,7 +154,7 @@ const buildVuePlugin: OutputPlugin = {
 };
 
 async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
-  // 编译scss文件
+  // 只是针对es：编译scss文件
   await compileScss();
 
   return [
@@ -175,6 +184,44 @@ async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
           exclude: ["rollup.config.ts"],
         }),
         commonjs(),
+      ],
+    },
+    {
+      external: ["vue", "vuex", "@dcloudio/uni-app"],
+      input: {
+        ...indexEntries,
+        // 仅编译 vue 的 ts
+        ...Object.fromEntries(
+          vueEntries.map((entry) => [entry.name, entry.vueFile]),
+        ),
+      },
+      preserveEntrySignatures: "strict",
+      strictDeprecations: true,
+      output: {
+        format: "cjs",
+        dir: CJS_LIB_PATH,
+        entryFileNames: "[name]" + CJS_EXTENSION,
+        sourcemap: true,
+        banner: blockBanner,
+        globals: {
+          vue: "Vue",
+        },
+      },
+      plugins: [
+        vue({ css: false }),
+        nodeResolve({ extensions: [".vue", ".ts"] }),
+        typescript({
+          exclude: ["rollup.config.ts"],
+          tsconfigOverride: {
+            compilerOptions: {
+              declaration: false,
+              composite: false,
+            },
+            exclude: ["rollup.config.ts"],
+          },
+        }),
+        commonjs(),
+        postcss(),
       ],
     },
   ];
