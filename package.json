@@ -29,7 +29,8 @@
       "default": "./lib/es/index.mjs"
     },
     "./components/*.vue": "./components/*.vue",
-    "./styles/css": "./src/assets/styles/export/index.css"
+    "./styles/css": "./src/assets/styles/export/index.css",
+    "./src/assets/styles/export/index.css": "./src/assets/styles/export/index.css"
   },
   "files": [
     "components",
