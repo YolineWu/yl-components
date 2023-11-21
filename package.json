@@ -24,13 +24,12 @@
   "types": "lib/types/src/index.d.ts",
   "exports": {
     ".": {
+      "import": "./lib/es/index.mjs",
+      "require": "./lib/es/index.mjs",
       "types": "./lib/types/src/index.d.ts",
       "default": "./lib/es/index.mjs"
     },
-    "./components/*.vue": {
-      "default": "./components/*.vue",
-      "types": "./lib/types/components/*.d.ts"
-    },
+    "./components/*.vue": "./components/*.vue",
     "./styles/css": "./src/assets/styles/export/index.css"
   },
   "files": [
