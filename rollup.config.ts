@@ -34,22 +34,6 @@ const htmlBanner = `<!-- ${packageInfo.name} library v${packageInfo.version} -->
 const ES_LIB_PATH = "lib/es";
 // es文件扩展名
 const ES_EXTENSION = ".mjs";
-// css文件扩展名
-const CSS_EXTENSION = ".css";
-
-// sass 解析选项
-const sassOptions: sass.Options<"sync"> = {
-  sourceMap: true,
-  importers: [
-    {
-      findFileUrl(url: string): URL {
-        return url.startsWith("@")
-          ? new URL(path.join("src", url.substring(1)), import.meta.url)
-          : new URL(url, import.meta.url);
-      },
-    },
-  ],
-};
 
 // 主入口文件
 const indexEntries = { index: "src/index.ts" };
@@ -78,30 +62,41 @@ const vueEntries: VueEntry[] = glob
     return entries;
   }, []);
 
-// 编译 `vue` 组件 `scss`
-async function compileScss() {
-  console.info("compiling scss");
-  for (const entry of vueEntries) {
-    // 使用sass解析成css
-    const result = sass.compile(entry.scssFile, sassOptions);
+/** 修改 `vue` 文件中 `<script>` 块的内容 */
+function changeVueScript(vueContent: string, entry: VueEntry): string {
+  // vue中的 `ts` 代码编译后的 `js` 文件路径
+  const jsPath = path.join("../../", ES_LIB_PATH, entry.name + ES_EXTENSION);
 
-    // 生成css文件的位置
-    const cssPath = path.join(ES_LIB_PATH, entry.name + CSS_EXTENSION);
-    // 创建目录
-    fs.mkdirSync(path.dirname(cssPath), { recursive: true });
-    const mapCssPath = cssPath + ".map";
-    fs.writeFileSync(
-      cssPath,
-      blockBanner +
-        result.css +
-        (result.sourceMap
-          ? `\n/*# sourceMappingURL=${path.basename(mapCssPath)} */`
-          : ""),
-    );
-    // 生成css.map
-    if (result.sourceMap)
-      fs.writeFileSync(mapCssPath, result.sourceMap.toString());
-  }
+  return (
+    vueContent
+      //替换 `<script>` 标签中的src
+      .replace(/(<script.*?src=").*?(".*?>)/gm, `$1${jsPath}$2`)
+      //删除 `<script>` 标签的 `lang` 属性
+      .replace(/(<script.*?)lang=".*?"(.*?>)/gm, "$1$2")
+  );
+}
+
+/** 编译 `vue` 文件中 `<style>` 块中的scss，并替换（仅支持单个<style>块） */
+function compileVueScss(vueContent: string) {
+  // 获取 `<style>` 中的 `scss`
+  const scss = vueContent.replace(/.*?<style.*?>(.*)<\/style>.*/s, "$1");
+  // 使用 `sass` 把 `scss` 解析成 `css`
+  const css = sass.compileString(scss, {
+    importers: [
+      {
+        findFileUrl(url: string): URL {
+          return url.startsWith("@")
+            ? new URL(path.join("src", url.substring(1)), import.meta.url)
+            : new URL(url, import.meta.url);
+        },
+      },
+    ],
+  });
+  // 替换 `<style>` 块中的内容，并把 `lang="scss"` 去掉
+  return vueContent.replace(
+    /(<style.*?)\slang=".*?"(.*?>).*(<\/style>)/s,
+    `$1$2\n${css.css}\n$3`,
+  );
 }
 
 /**
@@ -113,44 +108,23 @@ const buildVuePlugin: OutputPlugin = {
   async writeBundle() {
     for (const entry of vueEntries) {
       // 原始 `vue` 文件内容
-      const originVue = fs.readFileSync(entry.vueFile, "utf-8");
+      let vueContent = fs.readFileSync(entry.vueFile, "utf-8");
 
-      // vue中的 `ts` 代码编译后的 `js` 文件路径
-      const jsPath = path.join(
-        "../../",
-        ES_LIB_PATH,
-        entry.name + ES_EXTENSION,
-      );
-      /** 通过 {@link compileScss} 方法编译后的 `css` 文件 */
-      const cssPath = path.join(
-        "../../",
-        ES_LIB_PATH,
-        entry.name + CSS_EXTENSION,
-      );
+      // 修改 `<script>` 块的内容
+      vueContent = changeVueScript(vueContent, entry);
+
+      // 编译 `vue` 文件中 `<style>` 块中的scss，并替换
+      vueContent = compileVueScss(vueContent);
+
       // 创建目录
       fs.mkdirSync(path.dirname(entry.name), { recursive: true });
       // 创建 `[根目录]->components->[组件名]->[组件名].vue` 文件
-      fs.writeFileSync(
-        entry.name + ".vue",
-        htmlBanner +
-          originVue
-            //替换 `<script>` 标签中的src
-            .replace(/(<script.*src=")[^"]*("[^>]*>)/, `$1${jsPath}$2`)
-            //删除 `<script>` 标签的 `lang` 属性
-            .replace(/(<script.*)lang="[^"]*"\s([^>]*>)/, "$1$2")
-            //替换 `<style>` 标签中的src
-            .replace(/(<style.*src=")[^"]*("[^>]*>)/, `$1${cssPath}$2`)
-            //删除 `<style>` 标签的 `lang` 属性
-            .replace(/(<style.*)lang="[^"]*"\s([^>]*>)/, "$1$2"),
-      );
+      fs.writeFileSync(entry.name + ".vue", htmlBanner + vueContent);
     }
   },
 };
 
 async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
-  // 只是针对es：编译scss文件
-  await compileScss();
-
   return {
     external: ["vue", "vuex", "@dcloudio/uni-app"],
     input: {
