@@ -127,7 +127,7 @@ export const DEFAULT_MODAL_OPTIONS: ModalData = {
   onConfirm: true,
   closeOnClickMask: false,
   closeOnUnload: true,
-  closeOnHide: true,
+  closeOnHide: false,
   backAction: BackActionType.DISABLED,
 };
 

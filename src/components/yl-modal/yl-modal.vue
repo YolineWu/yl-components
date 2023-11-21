@@ -24,13 +24,17 @@
         :clickConfirm="clickConfirm"
       />
       <div class="c-yl-modal__action-bar" v-if="!$slots['action-bar']">
-        <div class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--cancel">
+        <div
+          class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--cancel"
+        >
           <slot name="cancel" :clickCancel="clickCancel" />
           <button v-if="!$slots['cancel']" @click="clickCancel">
             {{ cancelText }}
           </button>
         </div>
-        <div class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--confirm">
+        <div
+          class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--confirm"
+        >
           <slot name="confirm" :clickConfirm="clickConfirm" />
           <button v-if="!$slots['confirm']" @click="clickConfirm">
             {{ confirmText }}
@@ -61,7 +65,8 @@
   }
 
   &:not(&--center) {
-    & > div {
+    & > div,
+    view {
       margin-top: var(--yl-modal-margin-top);
     }
   }
@@ -97,10 +102,6 @@
     column-gap: var(--yl-modal-action-bar-gap);
     padding: var(--yl-modal-action-bar-padding);
     margin-top: var(--yl-modal-space-desc-action-bar);
-
-    & > * {
-      flex: 1;
-    }
   }
 
   &__btn-wrap {
@@ -111,6 +112,10 @@
       padding: var(--yl-modal-btn-padding);
       width: 100%;
       height: 100%;
+    }
+
+    &--flex-1 {
+      flex: 1;
     }
 
     &--cancel {
