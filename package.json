@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "yl-uni-components",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "一个使用 Vuex 管理显示与关闭的UniApp全局模态框，可以通过slot自定义模态框“确认”和“取消”按钮，可以在任何地方管理指定模态框，可以定义多个类型的模态框，并分别管理，模态框可以完全自定义和通过插槽自定义指定部分的UI。",
   "scripts": {
     "build": "rimraf lib && rimraf components && rollup --config rollup.config.ts --configPlugin typescript ",
