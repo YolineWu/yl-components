@@ -1,47 +1,45 @@
 <template>
-  <view class="content">
-    <image class="logo" src="../../static/logo.png"></image>
-    <view>
-      <text class="title">{{ title }}</text>
-    </view>
+  <view class="page-index">
+    <TestYlModal />
+    <button type="prmary" @click="showYlModal">弹出`yl-modal`弹框</button>
   </view>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import TestYlModal from "@/components/test-yl-modal/test-yl-modal.vue";
+import { useYLModalMixin, useYLModal } from "yl-uni-components";
+import store from "@/store";
 
 export default Vue.extend({
+  mixins: [useYLModalMixin(store)],
+  components: { TestYlModal },
   data() {
     return {
       title: "Hello",
     };
   },
-  onLoad() {},
-  methods: {},
+  onLoad() {
+    this.showYlModal();
+  },
+  methods: {
+    showYlModal() {
+      useYLModal(store).show({
+        title: "我是标题",
+        content:
+          "我是内内内内内内内内内内内内内内内内内内内内内内内内内内内内容",
+        desc: "我是描述",
+      });
+    },
+  },
 });
 </script>
-
-<style>
-.content {
+<style lang="scss">
+.page-index {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin: 200rpx auto 50rpx auto;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+  row-gap: 30rpx;
+  padding: 40rpx 50rpx;
 }
 </style>

@@ -4,8 +4,9 @@
     :class="['c-yl-modal', { 'c-yl-modal--center': center }]"
     @click="clickMask"
   >
+    <!-- #ifdef MP -->
     <slot :data="stateData" />
-    <div v-if="!$slots['default']" class="c-yl-modal__wrap">
+    <div class="c-yl-modal__wrap" v-if="!$slots['default']">
       <slot name="title" :title="title" />
       <div class="c-yl-modal__title" v-if="!$slots['title'] && title">
         {{ title }}
@@ -20,14 +21,20 @@
       </div>
       <slot
         name="action-bar"
-        :clickCancel="clickCancel"
-        :clickConfirm="clickConfirm"
+        :clickCancel="() => clickCancel()"
+        :clickConfirm="() => clickConfirm()"
+        :cancelText="cancelText"
+        :confirmText="confirmText"
       />
       <div class="c-yl-modal__action-bar" v-if="!$slots['action-bar']">
         <div
           class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--cancel"
         >
-          <slot name="cancel" :clickCancel="clickCancel" />
+          <slot
+            name="cancel"
+            :clickCancel="() => clickCancel()"
+            :cancelText="cancelText"
+          />
           <button v-if="!$slots['cancel']" @click="clickCancel">
             {{ cancelText }}
           </button>
@@ -35,13 +42,75 @@
         <div
           class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--confirm"
         >
-          <slot name="confirm" :clickConfirm="clickConfirm" />
+          <slot
+            name="confirm"
+            :clickConfirm="() => clickConfirm()"
+            :confirmText="confirmText"
+          />
           <button v-if="!$slots['confirm']" @click="clickConfirm">
             {{ confirmText }}
           </button>
         </div>
       </div>
     </div>
+    <!-- #endif -->
+    <!-- #ifndef MP -->
+    <slot :data="stateData">
+      <div class="c-yl-modal__wrap">
+        <slot name="title" :title="title">
+          <div class="c-yl-modal__title" v-if="title">
+            {{ title }}
+          </div>
+        </slot>
+        <slot name="content" :content="content">
+          <div class="c-yl-modal__main">
+            {{ content }}
+          </div>
+        </slot>
+        <slot name="desc" :desc="desc">
+          <div class="c-yl-modal__desc" v-if="desc">
+            {{ desc }}
+          </div>
+        </slot>
+        <slot
+          name="action-bar"
+          :clickCancel="() => clickCancel()"
+          :clickConfirm="() => clickConfirm()"
+          :cancelText="cancelText"
+          :confirmText="confirmText"
+        >
+          <div class="c-yl-modal__action-bar">
+            <div
+              class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--cancel"
+            >
+              <slot
+                name="cancel"
+                :clickCancel="() => clickCancel()"
+                :cancelText="cancelText"
+              >
+                <button @click="clickCancel">
+                  {{ cancelText }}
+                </button>
+              </slot>
+            </div>
+            <div
+              class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--confirm"
+            >
+              <slot
+                name="confirm"
+                :clickConfirm="() => clickConfirm()"
+                :confirmText="confirmText"
+              >
+                <button @click="clickConfirm">
+                  {{ confirmText }}
+                </button>
+              </slot>
+            </div>
+          </div>
+        </slot>
+      </div>
+    </slot>
+    <!-- #endif -->
   </div>
 </template>
 <script lang="ts" src="./yl-modal.ts" />
