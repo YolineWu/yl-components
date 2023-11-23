@@ -29,6 +29,14 @@ export default Vue.extend({
         content:
           "我是内内内内内内内内内内内内内内内内内内内内内内内内内内内内容",
         desc: "我是描述",
+        onConfirm: () => {
+          console.log("---------------- onConfirm");
+          return true;
+        },
+        onCancel: () => {
+          console.log("---------------- onCancel");
+          return false;
+        },
       });
     },
   },

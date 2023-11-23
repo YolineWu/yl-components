@@ -20,17 +20,15 @@ export type ModalOptions = {
   /** 确认按钮文本，默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段 */
   confirmText?: string;
   /**
-   * 点击取消按钮时的回调（会先调用此回调再调用组件的 `@cancel` 事件回调），返回值表示是否关闭模态框，
-   * 如果不需要回调，可直接设置为 `boolean` 值，表示点击取消按钮后是否关闭模态框
-   * 默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段
+   * 点击取消按钮时的回调（会先调用此回调再调用组件的 `@confirm` 事件回调），当返回true时表示
+   * 阻止关闭模态框，默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段
    */
-  onCancel?: (() => boolean) | boolean;
+  onCancel?: () => boolean | void;
   /**
-   * 点击确认按钮时的回调（会先调用此回调再调用组件的 `@confirm` 事件回调），返回值表示是否关闭模态框，
-   * 如果不需要回调，可直接设置为 `boolean` 值，表示点击确认按钮后是否关闭模态框
-   * 默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段
+   * 点击确认按钮时的回调（会先调用此回调再调用组件的 `@confirm` 事件回调），当返回true时表示
+   * 阻止关闭模态框，默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段
    */
-  onConfirm?: (() => boolean) | boolean;
+  onConfirm?: () => boolean | void;
   /** 点击模态框外的区域时是否关闭，默认值查看{@link DEFAULT_MODAL_OPTIONS} 的对应字段 */
   closeOnClickMask?: boolean;
   /**
@@ -123,8 +121,8 @@ export const DEFAULT_MODAL_OPTIONS: ModalData = {
   desc: "",
   cancelText: "取消",
   confirmText: "确定",
-  onCancel: true,
-  onConfirm: true,
+  onCancel: () => {},
+  onConfirm: () => {},
   closeOnClickMask: false,
   closeOnUnload: true,
   closeOnHide: false,
@@ -161,7 +159,7 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
     state: {
       show: false,
       pageState: ModalPageState.UNKNOW,
-      data: DEFAULT_MODAL_OPTIONS,
+      data: modalData,
     },
     mutations: {
       [Mutaion.SET_SHOW](state: ModalState, isShow: boolean) {
@@ -177,22 +175,22 @@ function defineStoreModule(modalData: ModalData): Module<ModalState, any> {
       },
     },
     actions: {
-      [ModalEvent.CONFIRM]({ commit }) {
-        const close =
-          typeof modalData.onConfirm === "function"
-            ? modalData.onConfirm()
-            : modalData.onConfirm;
-        if (close) commit(Mutaion.SET_SHOW, false);
+      [ModalEvent.CONFIRM]({ commit, state }) {
+        const stopClose =
+          typeof state.data.onConfirm === "function"
+            ? state.data.onConfirm()
+            : false;
+        if (!stopClose) commit(Mutaion.SET_SHOW, false);
       },
-      [ModalEvent.CANCEL]({ commit }) {
-        const close =
-          typeof modalData.onConfirm === "function"
-            ? modalData.onConfirm()
-            : modalData.onConfirm;
-        if (close) commit(Mutaion.SET_SHOW, false);
+      [ModalEvent.CANCEL]({ commit, state }) {
+        const stopClose =
+          typeof state.data.onCancel === "function"
+            ? state.data.onCancel()
+            : false;
+        if (!stopClose) commit(Mutaion.SET_SHOW, false);
       },
-      [ModalEvent.CLICK_MASK]({ commit }) {
-        if (modalData.closeOnClickMask) commit(Mutaion.SET_SHOW, false);
+      [ModalEvent.CLICK_MASK]({ commit, state }) {
+        if (state.data.closeOnClickMask) commit(Mutaion.SET_SHOW, false);
       },
       [ModalEvent.CLOSE]({ commit }) {
         commit(Mutaion.SET_SHOW, false);
@@ -260,6 +258,7 @@ export function useModal(
   });
 
   // 检查如果没有对应 `storePath` 的 store 模组，则手动注册
+  registerStoreIfNo(store, storePath, defModalData);
 
   // 当前 store 模组的 `state`
   function getModalState(): ModalState {
