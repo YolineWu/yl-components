@@ -271,10 +271,7 @@ export function useModal(
     isShow: () => getModalState().show,
     show(data: ModalOptions, reset: boolean = false): ModalData {
       const modalState = getModalState();
-      if (
-        modalState.pageState === ModalPageState.HIDED ||
-        modalState.pageState === ModalPageState.UNLOAD
-      )
+      if (modalState.pageState === ModalPageState.UNLOAD)
         return modalState.data;
       const resultData: ModalData = {
         ...(reset ? defModalData : modalState.data),
