@@ -21,8 +21,6 @@
       </div>
       <slot
         name="action-bar"
-        :clickCancel="() => clickCancel()"
-        :clickConfirm="() => clickConfirm()"
         :cancelText="cancelText"
         :confirmText="confirmText"
       />
@@ -30,11 +28,7 @@
         <div
           class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--cancel"
         >
-          <slot
-            name="cancel"
-            :clickCancel="() => clickCancel()"
-            :cancelText="cancelText"
-          />
+          <slot name="cancel" :cancelText="cancelText" />
           <button v-if="!$slots['cancel']" @click="clickCancel">
             {{ cancelText }}
           </button>
@@ -42,11 +36,7 @@
         <div
           class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--confirm"
         >
-          <slot
-            name="confirm"
-            :clickConfirm="() => clickConfirm()"
-            :confirmText="confirmText"
-          />
+          <slot name="confirm" :confirmText="confirmText" />
           <button v-if="!$slots['confirm']" @click="clickConfirm">
             {{ confirmText }}
           </button>
@@ -74,8 +64,6 @@
         </slot>
         <slot
           name="action-bar"
-          :clickCancel="() => clickCancel()"
-          :clickConfirm="() => clickConfirm()"
           :cancelText="cancelText"
           :confirmText="confirmText"
         >
@@ -83,11 +71,7 @@
             <div
               class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--cancel"
             >
-              <slot
-                name="cancel"
-                :clickCancel="() => clickCancel()"
-                :cancelText="cancelText"
-              >
+              <slot name="cancel" :cancelText="cancelText">
                 <button @click="clickCancel">
                   {{ cancelText }}
                 </button>
@@ -96,11 +80,7 @@
             <div
               class="c-yl-modal__btn-wrap c-yl-modal__btn-wrap--flex-1 c-yl-modal__btn-wrap--confirm"
             >
-              <slot
-                name="confirm"
-                :clickConfirm="() => clickConfirm()"
-                :confirmText="confirmText"
-              >
+              <slot name="confirm" :confirmText="confirmText">
                 <button @click="clickConfirm">
                   {{ confirmText }}
                 </button>
