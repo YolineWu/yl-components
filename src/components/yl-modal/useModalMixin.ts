@@ -1,9 +1,9 @@
 import {
-  ModalEvent,
-  ModalState,
-  DEFAULT_MODAL_STORE_PATH,
-  ModalPageState,
-  DEFAULT_MODAL_OPTIONS,
+  YLModalEvent,
+  YLModalState,
+  DEFAULT_YL_MODAL_STORE_PATH,
+  YLModalPageState,
+  DEFAULT_YL_MODAL_OPTIONS,
   registerStoreIfNo,
 } from "./useModal";
 import Vue from "vue";
@@ -18,9 +18,9 @@ import { StringUtils } from "../../utils/string";
  * @param store Vuex store
  * @param storePath `yl-modal` 组件对应 Vuex store 的模组路径
  */
-export function useModalMixin(
+export function useYLModalMixin(
   store: Store<any>,
-  storePath: string = DEFAULT_MODAL_STORE_PATH,
+  storePath: string = DEFAULT_YL_MODAL_STORE_PATH,
 ) {
   if (!storePath) throw Error("storePath 不能为空");
   // 定义 `yl-modal` 是否正在显示的计算属性
@@ -30,7 +30,7 @@ export function useModalMixin(
 
   return Vue.extend({
     computed: {
-      ylModalState(): ModalState | undefined {
+      ylModalState(): YLModalState | undefined {
         return store.state[storePath];
       },
       [isShowFieldName](): boolean {
@@ -38,24 +38,24 @@ export function useModalMixin(
       },
       [backActionFieldName](): BackActionType {
         return (
-          this.ylModalState?.data.backAction || DEFAULT_MODAL_OPTIONS.backAction
+          this.ylModalState?.data.backAction || DEFAULT_YL_MODAL_OPTIONS.backAction
         );
       },
     },
     onLoad() {
       // 如果没有 `yl-modal` 组件的store则注册
-      registerStoreIfNo(store, storePath, DEFAULT_MODAL_OPTIONS);
+      registerStoreIfNo(store, storePath, DEFAULT_YL_MODAL_OPTIONS);
 
-      this.onYlPageStateChange(ModalPageState.LOAD);
+      this.onYlPageStateChange(YLModalPageState.LOAD);
     },
     onShow() {
-      this.onYlPageStateChange(ModalPageState.SHOWED);
+      this.onYlPageStateChange(YLModalPageState.SHOWED);
     },
     onHide() {
-      this.onYlPageStateChange(ModalPageState.HIDED);
+      this.onYlPageStateChange(YLModalPageState.HIDED);
     },
     onUnload() {
-      this.onYlPageStateChange(ModalPageState.UNLOAD);
+      this.onYlPageStateChange(YLModalPageState.UNLOAD);
     },
     onBackPress({ from }): boolean | void {
       if (from === "navigateBack" || !this.ylModalState) return;
@@ -63,14 +63,14 @@ export function useModalMixin(
         case BackActionType.DISABLED:
           return true;
         case BackActionType.DEFAULT:
-          store.dispatch(storePath + "/" + ModalEvent.CLOSE);
+          store.dispatch(storePath + "/" + YLModalEvent.CLOSE);
           return true;
       }
     },
     methods: {
-      onYlPageStateChange(state: ModalPageState) {
+      onYlPageStateChange(state: YLModalPageState) {
         if (this.ylModalState)
-          store.dispatch(storePath + "/" + ModalEvent.PAGE_STATE_CHANGE, state);
+          store.dispatch(storePath + "/" + YLModalEvent.PAGE_STATE_CHANGE, state);
       },
     },
   });

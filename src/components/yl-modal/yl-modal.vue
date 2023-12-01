@@ -154,13 +154,14 @@
   }
 
   &__btn-wrap {
+    width: 100%;
+    height: 100%;
+
     button {
       @include clear-native-button();
       @include button();
       text-align: center;
       padding: var(--yl-modal-btn-padding);
-      width: 100%;
-      height: 100%;
     }
 
     &--flex-1 {

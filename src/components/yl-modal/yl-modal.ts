@@ -1,24 +1,24 @@
 import Vue from "vue";
 import {
-  DEFAULT_MODAL_OPTIONS,
-  ModalData,
-  ModalEvent,
-  ModalState,
-  DEFAULT_MODAL_STORE_PATH,
+  DEFAULT_YL_MODAL_OPTIONS,
+  YLModalData,
+  YLModalEvent,
+  YLModalState,
+  DEFAULT_YL_MODAL_STORE_PATH,
 } from "./useModal";
 
 export default Vue.extend({
   name: "yl-modal",
   props: {
-    storePath: { type: String, default: DEFAULT_MODAL_STORE_PATH },
+    storePath: { type: String, default: DEFAULT_YL_MODAL_STORE_PATH },
     center: { type: Boolean, default: true },
   },
   computed: {
-    state(): ModalState | undefined {
+    state(): YLModalState | undefined {
       return this.$store.state[this.storePath];
     },
-    stateData(): ModalData {
-      return this.state?.data || DEFAULT_MODAL_OPTIONS;
+    stateData(): YLModalData {
+      return this.state?.data || DEFAULT_YL_MODAL_OPTIONS;
     },
     show(): boolean {
       return !!this.state?.show;
@@ -40,21 +40,21 @@ export default Vue.extend({
     },
   },
   methods: {
-    emitEvent(event: ModalEvent) {
+    emitEvent(event: YLModalEvent) {
       this.$store.dispatch(this.storePath + "/" + event);
       this.$emit(event);
     },
     /** 点击取消时调用 */
     clickCancel() {
-      this.emitEvent(ModalEvent.CANCEL);
+      this.emitEvent(YLModalEvent.CANCEL);
     },
     /** 点击确认时调用 */
     clickConfirm() {
-      this.emitEvent(ModalEvent.CONFIRM);
+      this.emitEvent(YLModalEvent.CONFIRM);
     },
     /** 点击模态框外的区域时调用 */
     clickMask() {
-      this.emitEvent(ModalEvent.CLICK_MASK);
+      this.emitEvent(YLModalEvent.CLICK_MASK);
     },
   },
 });
