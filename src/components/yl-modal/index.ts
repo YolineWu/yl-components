@@ -1,4 +1,4 @@
-import { useYLModalMixin } from "./useModalMixin";
+import { useYLModalMixin } from "./useYLModalMixin";
 import {
   DEFAULT_YL_MODAL_STORE_PATH,
   DEFAULT_YL_MODAL_OPTIONS,
@@ -15,13 +15,15 @@ import {
   type YLModalListener,
   type YLModalShowListener,
   type YLModalDataListener,
-} from "./useModal";
+} from "./useYLModal";
+import { YLModalMixin } from "./YLModalMixin";
 
 export {
   DEFAULT_YL_MODAL_STORE_PATH,
   DEFAULT_YL_MODAL_OPTIONS,
   YLModalEvent,
   useYLModal,
+  YLModalMixin,
   useYLModalMixin,
   BackActionType,
   YLModalOptions,
