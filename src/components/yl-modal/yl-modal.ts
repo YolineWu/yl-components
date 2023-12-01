@@ -5,7 +5,7 @@ import {
   YLModalEvent,
   YLModalState,
   DEFAULT_YL_MODAL_STORE_PATH,
-} from "./useModal";
+} from "./useYLModal";
 
 export default Vue.extend({
   name: "yl-modal",

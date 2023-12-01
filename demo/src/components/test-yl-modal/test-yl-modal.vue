@@ -29,12 +29,10 @@ export default class TestYlModal extends Vue {
   @Ref() readonly ylModal!: any;
 
   clickCancel() {
-    console.log("---------clickCancel");
     this.ylModal.clickCancel();
   }
 
   clickConfrim() {
-    console.log("---------clickConfirm");
     this.ylModal.clickConfirm();
   }
 }

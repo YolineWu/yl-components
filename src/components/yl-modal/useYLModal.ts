@@ -66,12 +66,12 @@ export type YLModalDataCallBack = (data: YLModalData) => void;
 export type YLModalController = {
   /**
    * 显示组件，如果组件已经在显示，则会修改当前组件数据
-   * @param data 要显示的组件内容数据
+   * @param options 组件选项
    * @param reset 组件正在显示时再次调用此方法，是否重置组件
-   * 内容数据到默认值 {@link DEFAULT_YL_MODAL_OPTIONS} ，再
-   * 加载参数 `data` 的值
+   * 内容数据到默认值（调用 {@link useYLModal} 时传入的 `options` 参数），
+   * 再加载参数 `data` 的值。默认为 `true`
    */
-  show(data: YLModalOptions, reset?: boolean): YLModalData;
+  show(options: YLModalOptions, reset?: boolean): YLModalData;
   /** 关闭显示组件 */
   close(): void;
   /** 组件是否显示正在显示 */
@@ -267,16 +267,15 @@ export function useYLModal(
   return {
     getModalState,
     isShow: () => getModalState().show,
-    show(data: YLModalOptions, reset: boolean = false): YLModalData {
+    show(options: YLModalOptions, reset: boolean = true): YLModalData {
       const modalState = getModalState();
-      if (modalState.pageState === YLModalPageState.UNLOAD)
-        return modalState.data;
       const resultData: YLModalData = {
         ...(reset ? defModalData : modalState.data),
-        ...data,
+        ...options,
       };
       store.commit(`${storePath}/${Mutaion.SET_DATA}`, resultData);
-      store.commit(`${storePath}/${Mutaion.SET_SHOW}`, true);
+      if (modalState.pageState !== YLModalPageState.UNLOAD)
+        store.commit(`${storePath}/${Mutaion.SET_SHOW}`, true);
       return resultData;
     },
     close() {
