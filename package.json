@@ -49,11 +49,15 @@
   "license": "MIT",
   "peerDependencies": {
     "vue": "~2.6.14",
+    "vue-property-decorator": ">= 8.0.0 < 10.0.0",
     "vuex": "^3.2.0"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.3.2",
     "@dcloudio/uni-app": "^2.0.2-3090620231104001",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/vue-fontawesome": "^2.0.10",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
@@ -69,6 +73,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
     "vue-loader": "^15.11.1",
+    "vue-property-decorator": "^8.5.1",
     "vue-template-compiler": "~2.6.14"
   }
 }

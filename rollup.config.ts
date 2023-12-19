@@ -126,7 +126,7 @@ const buildVuePlugin: OutputPlugin = {
 
 async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
   return {
-    external: ["vue", "vuex", "@dcloudio/uni-app", "@vue/composition-api"],
+    external: ["vue", "vuex", "@dcloudio/uni-app", "vue-property-decorator"],
     input: {
       ...indexEntries,
       // 仅编译 vue 的 ts

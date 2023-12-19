@@ -53,4 +53,9 @@
   --yl-modal-confirm-bg-color: var(--yl-color-primary);
   --yl-modal-confirm-text-color: white;
   --yl-modal-confirm-border: none;
+
+  --yl-rating-column-gap: 20rpx;
+  --yl-rating-star-size: 50rpx;
+  --yl-rating-star-color: #cccccc;
+  --yl-rating-star-active-color: gold;
 }
