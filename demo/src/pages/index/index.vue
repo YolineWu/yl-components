@@ -1,51 +1,29 @@
 <template>
-  <view class="page-index">
-    <TestYlModal />
-    <button type="prmary" @click="showYlModal">弹出`yl-modal`弹框</button>
+  <view class="p-index">
+    <button @click="navigateTo('/pages/index/modal')">全局弹框组件</button>
   </view>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import TestYlModal from "@/components/test-yl-modal/test-yl-modal.vue";
-import { useYLModalMixin, useYLModal } from "yl-uni-components";
-import store from "@/store";
+import { Component, Vue } from "vue-property-decorator";
 
-export default Vue.extend({
-  mixins: [useYLModalMixin(store)],
-  components: { TestYlModal },
-  data() {
-    return {
-      title: "Hello",
-    };
-  },
-  onLoad() {
-    this.showYlModal();
-  },
-  methods: {
-    showYlModal() {
-      useYLModal(store).show({
-        title: "我是标题",
-        content:
-          "我是内内内内内内内内内内内内内内内内内内内内内内内内内内内内容",
-        desc: "我是描述",
-        onConfirm: () => {
-          return true;
-        },
-        onCancel: () => {
-          return false;
-        },
-      });
-    },
-  },
-});
+@Component
+export default class index extends Vue {
+  navigateTo(url: string) {
+    uni.navigateTo({ url });
+  }
+}
 </script>
-<style lang="scss">
-.page-index {
+
+<style lang="scss" scoped>
+.p-index {
   display: flex;
   flex-direction: column;
-  align-items: center;
   row-gap: 30rpx;
-  padding: 40rpx 50rpx;
+  padding: 50rpx;
+
+  button {
+    width: 100%;
+  }
 }
 </style>

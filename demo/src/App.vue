@@ -19,4 +19,7 @@ export default Vue.extend({
 
 <style>
 /*每个页面公共css */
+/* #ifdef H5 */
+@import "yl-uni-components/src/assets/styles/export/index.css";
+/* #endif */
 </style>
