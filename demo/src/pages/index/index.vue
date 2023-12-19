@@ -1,6 +1,7 @@
 <template>
   <view class="p-index">
     <button @click="navigateTo('/pages/index/modal')">全局弹框组件</button>
+    <button @click="navigateTo('/pages/index/rating')">评分组件</button>
   </view>
 </template>
 

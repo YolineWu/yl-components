@@ -24,7 +24,6 @@ export default class hhRating extends Vue {
 
   /** 点击星星时调用 */
   clickStar(n: number) {
-    console.log("-------------clickStar n=", n);
     this.current = n;
   }
 }
