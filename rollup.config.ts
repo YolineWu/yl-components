@@ -5,12 +5,11 @@ import typescript from "rollup-plugin-typescript2";
 import * as sass from "sass";
 import { glob } from "glob";
 import fs from "fs";
-
-// 加载 `package.json` 文件内容
 import packageInfo from "./package.json" assert { type: "json" };
 import path from "path";
 import { fileURLToPath } from "url";
 import { OutputPlugin } from "rollup";
+import url from "@rollup/plugin-url";
 
 /** vue 入口文件信息 */
 type VueEntry = {
@@ -19,6 +18,8 @@ type VueEntry = {
   tsFile: string;
   scssFile: string;
 };
+
+type InputMap = { [name: string]: string };
 
 // 在每个文件开始的地方添加的内容
 const blockBanner = `/**
@@ -30,13 +31,17 @@ const htmlBanner = `<!-- ${packageInfo.name} library v${packageInfo.version} -->
 <!-- github: https://github.com/YolineWu/yl-components -->
 `;
 
-// es库位置
-const ES_LIB_PATH = "lib/es";
-// es文件扩展名
+/** es库位置 */
+const ES_OUTPUT_DIR = "lib/es";
+/** es文件扩展名 */
 const ES_EXTENSION = ".mjs";
 
+function removeExtname(file: string): string {
+  return file.slice(0, file.length - path.extname(file).length);
+}
+
 // 主入口文件
-const indexEntries = { index: "src/index.ts" };
+const indexEntries: InputMap = { index: "src/index.ts" };
 /**
  * 处理 vue 组件文件，要求组件分离出 `[组件名].ts` 、`[组件名].scss` 和
  * `[组件名].vue`，该 `[组件名].vue` 必须通过 `<script lang="ts" src="[组件名].ts" />`
@@ -45,10 +50,7 @@ const indexEntries = { index: "src/index.ts" };
 const vueEntries: VueEntry[] = glob
   .sync("src/**/*.vue")
   .reduce<VueEntry[]>((entries, file) => {
-    const pathWithoutExt = file.slice(
-      0,
-      file.length - path.extname(file).length,
-    );
+    const pathWithoutExt = removeExtname(file);
 
     entries.push({
       name: path.relative("src", pathWithoutExt),
@@ -65,7 +67,7 @@ const vueEntries: VueEntry[] = glob
 /** 修改 `vue` 文件中 `<script>` 块的内容 */
 function changeVueScript(vueContent: string, entry: VueEntry): string {
   // vue中的 `ts` 代码编译后的 `js` 文件路径
-  const jsPath = path.join("../../", ES_LIB_PATH, entry.name + ES_EXTENSION);
+  const jsPath = path.join("../../", ES_OUTPUT_DIR, entry.name + ES_EXTENSION);
 
   return (
     vueContent
@@ -127,6 +129,7 @@ const buildVuePlugin: OutputPlugin = {
 async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
   return {
     external: ["vue", "vuex", "@dcloudio/uni-app", "vue-property-decorator"],
+    logLevel: "debug",
     input: {
       ...indexEntries,
       // 仅编译 vue 的 ts
@@ -138,7 +141,7 @@ async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
     strictDeprecations: true,
     output: {
       format: "es",
-      dir: ES_LIB_PATH,
+      dir: ES_OUTPUT_DIR,
       entryFileNames: "[name]" + ES_EXTENSION,
       sourcemap: true,
       banner: blockBanner,
@@ -151,6 +154,7 @@ async function optionsFun(): Promise<RollupOptions | RollupOptions[]> {
         exclude: ["rollup.config.ts"],
       }),
       commonjs(),
+      url(),
     ],
   };
 }

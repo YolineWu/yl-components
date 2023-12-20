@@ -1,15 +1,16 @@
 <template>
   <div class="c-hh-rating">
-    <font-awesome-icon
-      v-for="n in count"
-      :key="n"
+    <div
+      v-for="(icon, index) in ratingIcons"
+      :key="index"
       :class="[
         'c-hh-rating__star',
-        { 'c-hh-rating__star--active': n <= current },
+        { 'c-hh-rating__star--active': index < current },
       ]"
-      @click="() => clickStar(n)"
-      :icon="['fas', 'star']"
-    />
+      @click="() => clickStar(index)"
+    >
+      <image :src="icon" />
+    </div>
   </div>
 </template>
 
@@ -22,12 +23,9 @@
   column-gap: var(--yl-rating-column-gap);
 
   &__star {
-    width: var(--yl-rating-star-size);
-    height: var(--yl-rating-star-size);
-    color: var(--yl-rating-star-color);
-
-    &--active {
-      color: var(--yl-rating-star-active-color);
+    image {
+      width: var(--yl-rating-star-size);
+      height: var(--yl-rating-star-size);
     }
   }
 }

@@ -14,7 +14,7 @@ import YlRating from "yl-uni-components/components/yl-rating/yl-rating.vue";
 @Component({ components: { YlRating } })
 export default class rating extends Vue {
   /** 当前评分 */
-  current: number = 0;
+  current: number = 2;
   /** 最高评分，即显示多少颗星星 */
   count: number = 5;
 }

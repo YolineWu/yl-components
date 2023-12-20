@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "description": "一个使用 Vuex 管理显示与关闭的UniApp全局模态框，可以通过slot自定义模态框“确认”和“取消”按钮，可以在任何地方管理指定模态框，可以定义多个类型的模态框，并分别管理，模态框可以完全自定义和通过插槽自定义指定部分的UI。",
   "scripts": {
-    "build": "rimraf lib && rimraf components && rollup --config rollup.config.ts --configPlugin typescript ",
-    "watch": "rimraf lib && rimraf components && rollup --config rollup.config.ts --configPlugin typescript --watch"
+    "build": "rimraf lib && rimraf components && rollup --config rollup.config.ts --configPlugin typescript"
   },
   "keywords": [
     "UniApp",
@@ -30,7 +29,8 @@
     },
     "./components/*.vue": "./components/*.vue",
     "./styles/css": "./src/assets/styles/export/index.css",
-    "./src/assets/styles/export/index.css": "./src/assets/styles/export/index.css"
+    "./src/assets/styles/export/index.css": "./src/assets/styles/export/index.css",
+    "./src/static/*": "./src/static/*"
   },
   "files": [
     "components",
@@ -55,17 +55,15 @@
   "devDependencies": {
     "@dcloudio/types": "^3.3.2",
     "@dcloudio/uni-app": "^2.0.2-3090620231104001",
-    "@fortawesome/free-regular-svg-icons": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "@fortawesome/vue-fontawesome": "^2.0.10",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
+    "@rollup/plugin-url": "^8.0.2",
     "clean-css-cli": "^5.6.2",
     "glob": "^10.3.10",
     "postcss": "^8.4.31",
     "rimraf": "^5.0.5",
-    "rollup": "^4.4.1",
+    "rollup": "^4.9.1",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "rollup-plugin-vue": "^5.1.9",
