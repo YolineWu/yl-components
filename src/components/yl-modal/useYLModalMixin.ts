@@ -47,21 +47,26 @@ export function useYLModalMixin(
       },
     },
     onLoad() {
+      if (this.hasYlModalMixin) return;
       // 如果没有 `yl-modal` 组件的store则注册
       registerStoreIfNo(store, storePath, DEFAULT_YL_MODAL_OPTIONS);
 
       this.onYlPageStateChange(YLModalPageState.LOAD);
     },
     onShow() {
+      if (this.hasYlModalMixin) return;
       this.onYlPageStateChange(YLModalPageState.SHOWED);
     },
     onHide() {
+      if (this.hasYlModalMixin) return;
       this.onYlPageStateChange(YLModalPageState.HIDED);
     },
     onUnload() {
+      if (this.hasYlModalMixin) return;
       this.onYlPageStateChange(YLModalPageState.UNLOAD);
     },
     onBackPress({ from }): boolean | void {
+      if (this.hasYlModalMixin) return;
       if (from === "navigateBack" || !this.ylModalState) return;
       switch (this[backActionFieldName as keyof typeof this]) {
         case BackActionType.DISABLED:
@@ -73,6 +78,7 @@ export function useYLModalMixin(
     },
     methods: {
       onYlPageStateChange(state: YLModalPageState) {
+        if (this.hasYlModalMixin) return;
         if (this.ylModalState)
           store.dispatch(
             storePath + "/" + YLModalEvent.PAGE_STATE_CHANGE,

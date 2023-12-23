@@ -5,6 +5,6 @@ import "./uni.promisify.adaptor";
 
 Vue.config.productionTip = false;
 
-//Vue.mixin(YLModalMixin);
+Vue.mixin(YLModalMixin);
 
 new App().$mount();

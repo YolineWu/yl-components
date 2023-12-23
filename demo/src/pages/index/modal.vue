@@ -8,12 +8,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import TestYlModal from "@/components/test-yl-modal/test-yl-modal.vue";
-import { useYLModal } from "yl-uni-components";
+import { useYLModal, useYLModalMixin } from "yl-uni-components";
 import store from "@/store";
 
 @Component({ components: { TestYlModal } })
-export default class modal extends Vue {
-
+export default class modal extends useYLModalMixin(store) {
   /** 显示模态框 */
   showYlModal() {
     useYLModal(store).show({
