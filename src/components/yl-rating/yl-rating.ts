@@ -1,25 +1,25 @@
-import { Component, Model, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Model, Prop, Vue } from "vue-property-decorator";
 import starGold from "../../static/images/svg/star-gold.svg";
 import starGrey from "../../static/images/svg/star-grey.svg";
 
 @Component
 export default class hhRating extends Vue {
-  /** 当前选择了多少颗星 */
-  @Model("input", { type: Number }) value!: number | undefined;
-  /** 一共多少颗星，默认5颗 */
-  @Prop({ type: Number, default: 5 }) count!: number | undefined;
+  /** 当前评分 */
+  @Model("input", { type: Number, required: true }) readonly value!: number;
+  /** 最高评分（即有多少颗星） */
+  @Prop({ type: Number, default: 5 }) readonly count!: number;
   /** 未选中时的图标 `url` */
   @Prop({ default: starGrey })
-  readonly inactiveIcon!: any;
+  readonly inactiveIcon!: string;
   /** 选中时的图标 `url` */
   @Prop({ default: starGold })
-  readonly activeIcon!: any;
+  readonly activeIcon!: string;
 
-  /** 获取当前选择了多少颗星 */
+  /** 获取当前评分 */
   get current(): number {
     return this.value || 0;
   }
-  /** 设置当前选择了多少颗星 */
+  /** 设置获取当前评分 */
   set current(value: number) {
     this.$emit("input", value || 0);
   }
@@ -35,7 +35,8 @@ export default class hhRating extends Vue {
   }
 
   /** 点击星星时调用 */
-  clickStar(index: number) {
-    this.current = index + 1;
+  @Emit()
+  clickStar(rating: number) {
+    this.current = rating;
   }
 }

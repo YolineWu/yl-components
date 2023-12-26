@@ -1,4 +1,6 @@
 {
+  /* schema url from https://github.com/uni-helper/uni-app-schemas-vscode */
+  "$schema": "https://cdn.jsdelivr.net/gh/uni-helper/uni-app-schemas-vscode/schemas/pages.json",
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {

@@ -7,7 +7,7 @@
         'c-hh-rating__star',
         { 'c-hh-rating__star--active': index < current },
       ]"
-      @click="() => clickStar(index)"
+      @click="() => clickStar(index + 1)"
     >
       <image :src="icon" />
     </div>
@@ -23,6 +23,8 @@
   column-gap: var(--yl-rating-column-gap);
 
   &__star {
+    line-height: 0;
+
     image {
       width: var(--yl-rating-star-size);
       height: var(--yl-rating-star-size);

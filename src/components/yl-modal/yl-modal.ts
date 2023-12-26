@@ -11,7 +11,7 @@ export default Vue.extend({
   name: "yl-modal",
   props: {
     storePath: { type: String, default: DEFAULT_YL_MODAL_STORE_PATH },
-    center: { type: Boolean, default: true },
+    center: { type: Boolean, default: false },
   },
   computed: {
     state(): YLModalState | undefined {
